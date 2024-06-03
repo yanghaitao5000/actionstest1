@@ -1,0 +1,20 @@
+name: DataX Migration on Push
+
+on: [push]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Run DataX Migration Script
+        run: |
+          ssh -o StrictHostKeyChecking=no user@remote-server 'bash -s' < ./scripts/run_datax_migration.sh
