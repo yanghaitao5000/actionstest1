@@ -1,0 +1,37 @@
+name: Deploy Flink Job
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: 0 30 5 * * ? *
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy and Run Flink Job
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
+            # Set up environment variables
+            export FLINK_HOME=/path/to/flink
+            export FLINK_JOB_JAR=/path/to/your/flink-job.jar
+            export MYSQL_SOURCE_CONFIG=/path/to/source/config.properties
+            export MYSQL_SINK_CONFIG=/path/to/sink/config.properties
+          
+            # Stop any existing Flink job
+            $FLINK_HOME/bin/flink cancel -m your-job-manager-address your-job-id
+          
+            # Deploy and start the new Flink job
+            $FLINK_HOME/bin/flink run -m your-job-manager-address -d $FLINK_JOB_JAR --source $MYSQL_SOURCE_CONFIG --sink $MYSQL_SINK_CONFIG
+          EOF
