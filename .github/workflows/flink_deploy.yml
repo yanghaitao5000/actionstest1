@@ -1,10 +1,8 @@
 name: Deploy Flink Job
 
 on:
-  push:
-    branches: [ "main" ]
   schedule:
-    - cron: "0 30 5 * * ? *"
+    - cron: '0 30 * * * ? *'
 
 jobs:
   deploy:
