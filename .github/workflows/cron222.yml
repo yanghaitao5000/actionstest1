@@ -1,0 +1,17 @@
+name: schedule-cron-222
+run-name: ${{ github.actor }} is testing schedule-cron @
+on:
+  schedule:
+    - cron: '25 * * * *'
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout cron1
+        run: echo "这是一个定时调度测试1."
+
+      - run: echo "cron2!"
+
+      - name:  cron3
+        run: echo "这是一个定时调度测试3."
